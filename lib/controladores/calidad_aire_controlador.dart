@@ -14,20 +14,20 @@ class CalidadAireControlador {
   })
   //La funcion espera resultados de la API
   async {
-    // 1. Obtener coordenadas de la ciudad seleccionada
+    //Obtitne las coordenadas de la ciudad seleccionada
     final coordenadas = Constantes.ciudades[ciudad];
     if (coordenadas == null) {
       throw Exception("Ciudad no valida o no encontrada.");
     }
 
-    // 2. Llamar al servicio para obtener los datos de la API
+    //Llama al servicio para obtener los datos de la API
     final data = await _apiServicio.obtenerCalidadAire(
       lat: coordenadas["lat"]!,
       lon: coordenadas["lon"]!,
       fecha: fecha,
     );
 
-    // 3. Calcular el promedio diario de PM2.5
+    //Calcular el promedio diario de PM2.5
     List<dynamic> pm2_5Values = data["hourly"]["pm2_5"];
     double suma = 0;
     int count = 0;
@@ -45,10 +45,10 @@ class CalidadAireControlador {
     }
     double promedioPM25 = suma / count;
 
-    // 4. Calcular el ÍNDICE DE EXPOSICIÓN (Fórmula principal)
+    // Formula propuesta
     double indiceExposicion = promedioPM25 * horasExposicion;
 
-    // 5. Clasificar el nivel de riesgo
+    //Clasificacion
     String nivelRiesgo;
     if (indiceExposicion < 100) {
       nivelRiesgo = "Bajo ";
@@ -58,7 +58,7 @@ class CalidadAireControlador {
       nivelRiesgo = "Alto";
     }
 
-    // 6. Retornar el modelo con los resultados
+    //Retorna los resultados
     return CalidadAireModelo(
       promedioPM25: promedioPM25,
       indiceExposicion: indiceExposicion,
